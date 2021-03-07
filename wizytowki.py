@@ -32,6 +32,7 @@ class BusinessContact(BaseContact):
 
     def __str__(self):
         return f"{self.name} {self.last_name} {self.phone} {self.email} {self.position} {self.company} {self.business_phone}"
+
     def __repr__(self):
          return f"{self.name} {self.last_name} {self.phone} {self.email} {self.position} {self.company} {self.business_phone}"
 
@@ -57,7 +58,9 @@ def create_contacts(card_type, quantity):
     return random_card
 
 
-
+random_card = create_contacts("BusinessContact", 2)
+single_card = random_card[0]
+print(single_card.contact())
 
 
 
