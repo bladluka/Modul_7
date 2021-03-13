@@ -1,7 +1,10 @@
+import random
+import time
+
 library_list = []
+current_date = time.strftime("%d.%m.%Y", time.localtime())
 
 class Movies:
-
 
     def __init__(self, title, year, type):
         self.title = title
@@ -11,14 +14,13 @@ class Movies:
         library_list.append(self)
 
     def play(self, step=1):
-        no_plays += step
+        self.no_plays += step
 
     def __str__(self):
         return f"{self.title} {self.year}"
 
     def __repr__(self):
         return f"{self.title} {self.year}"
-
 
 
 movie1 = Movies(title="The Producers", year="1968", type="comedy")
@@ -32,7 +34,6 @@ movie8 = Movies(title="Stargate ", year="1994", type="Sci-Fi")
 movie9 = Movies(title="Flatliners", year="1990", type="Sci-fi")
 movie10 = Movies(title="Die Hard", year="1988", type="thriller")
 
-
 class Series(Movies):
 
     def __init__(self, no_episode, no_season, *args, **kwargs):
@@ -41,14 +42,13 @@ class Series(Movies):
         self.no_season = no_season
 
     def play(self, step=1):
-        no_plays += step
+        self.no_plays += step
 
     def __str__(self):
         return f"{self.title} S{self.no_season}E{self.no_episode}"
 
     def __repr__(self):
         return f"{self.title} S{self.no_season}E{self.no_episode}"
-
 
 series1 = Series(title="House M.D.", year="2004 - 2007", type="drama", no_episode=1, no_season=1)
 series2 = Series(title="Doctor Who", year="1963 - 2020 ", type="Sci-Fi", no_episode=1, no_season=1)
@@ -61,30 +61,62 @@ series8 = Series(title="Fawlty Towers", year="1979", type="comedy", no_episode=1
 series9 = Series(title="McGyver", year="1985 - 1992", type="thriller", no_episode=1, no_season=1)
 series10 = Series(title="Miami Vice", year="1984 - 1990", type="criminal", no_episode=1, no_season=1)
 
-
-
-
-
 def movies_list():
     movies = []
     for position in library_list:
         if type(position) == Movies:
             movies.append(position)
-    return movies
+    return sorted(movies, key=lambda x: x.title, reverse=False)
+
+def series_list():
+    series = []
+    for position in library_list:
+        if type(position) == Series:
+            series.append(position)
+    return sorted(series, key=lambda x: x.title, reverse=False)
 
 def search(title):
-    movies = []
     for position in library_list:
         if title == position.title:
             return position
 
-#movies_list = get_movies()
-#print(movies_list)
+def generate_views():
+    random_view = random.choice(library_list)
+    random_no = random.randrange(1, 101)
+    for position in library_list:
+        if position == random_view:
+            position.play(step=random_no)
 
-movies = movies_list()
-#for number in movies_list():
- #   print(number)
+def generate_views_10():
+    for view in range(10):
+        generate_views()
 
-titles = search('Scrubs')
-print(titles)
+def top_titles(content_type, number):
+    movies_by_no_plays = []
+    series_by_no_plays = []
+    library_list_by_no_plays = sorted(library_list, key=lambda x: x.no_plays, reverse=True)
+    if content_type == "Movies":
+        for position in library_list_by_no_plays:
+            if type(position) == Movies:
+                movies_by_no_plays.append(position)
+        print(movies_by_no_plays[:number])
+    elif content_type == "Series":
+        for position in library_list_by_no_plays:
+            if type(position) == Series:
+                series_by_no_plays.append(position)
+        print(series_by_no_plays[:number])
+    elif content_type == "All content":
+        print(library_list_by_no_plays[:number])
+
+    else:
+        print("No content")
+
+
+print('--------Biblioteka filmów--------')
+for position in library_list:
+    print(position)
+generate_views_10()
+print(f"----Najpopularniejsze filmy i seriale dnia {current_date}----")
+top_titles("All content", 3)
+
 
